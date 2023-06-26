@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace CadastrosFiap.APP.Services
 {
-    public static class ApiAlunoService
+    public static class ApiTurmaService
     {
         public static string Addres { get; set; } = "https://localhost:44352/";
         //public static string AddresToken { get; set; } = Addres + "api/v1/autenticacao";
@@ -38,7 +38,7 @@ namespace CadastrosFiap.APP.Services
             }
 
         }
-        public static async Task<AlunoDTO> GetAlunoById(int? id, string endPoint = "api/v1/alunos")
+        public static async Task<TurmaDTO> GetTurmaById(int? id, string endPoint = "api/v1/turmas")
         {
             try
             {
@@ -50,12 +50,12 @@ namespace CadastrosFiap.APP.Services
 
                 string responseBody = await response.Content.ReadAsStringAsync(); //ler o contéudo como string
 
-                var aluno = JsonConvert.DeserializeObject<AlunoDTO>(responseBody);
+                var turma = JsonConvert.DeserializeObject<TurmaDTO>(responseBody);
 
-                if (aluno == null)
+                if (turma == null)
                     return null;
 
-                return aluno;
+                return turma;
             }
             catch (Exception e)
             {
@@ -65,7 +65,7 @@ namespace CadastrosFiap.APP.Services
             }
         }
 
-        public static async Task<bool> RemoveById(int? id, string endPoint = "api/v1/alunos")
+        public static async Task<bool> RemoveById(int? id, string endPoint = "api/v1/turmas")
         {
             try
             {
@@ -86,7 +86,7 @@ namespace CadastrosFiap.APP.Services
             }
         }
 
-        public static async Task<IEnumerable<AlunoDTO>> GetAllAlunos(string endPoint = "api/v1/alunos")
+        public static async Task<IEnumerable<TurmaDTO>> GetAllTurmas(string endPoint = "api/v1/turmas")
         {
             try
             {
@@ -98,10 +98,10 @@ namespace CadastrosFiap.APP.Services
 
                 string responseBody = await response.Content.ReadAsStringAsync(); //ler o contéudo como string
 
-                var lista = JsonConvert.DeserializeObject<List<AlunoDTO>>(responseBody);
+                var lista = JsonConvert.DeserializeObject<List<TurmaDTO>>(responseBody);
 
                 if (lista == null)
-                    return new List<AlunoDTO>();
+                    return new List<TurmaDTO>();
 
                 return lista;
             }
@@ -109,28 +109,28 @@ namespace CadastrosFiap.APP.Services
             {
                 Console.WriteLine("\n Ocorreu um erro!");
                 Console.WriteLine("\n Erro: {0}", e.Message);
-                return new List<AlunoDTO>();
+                return new List<TurmaDTO>();
             }
         }
 
-        public static async Task<AlunoDTO> UpdateAluno(AlunoViewModel alunoViewModel, int id, string endPoint = "api/v1/alunos")
+        public static async Task<TurmaDTO> UpdateTurma(TurmaViewModel turmaViewModel, int id, string endPoint = "api/v1/turmas")
         {
             try
             {
                 var token = GetToken().Result;
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                HttpResponseMessage? response = await _httpClient.PutAsJsonAsync(Addres + endPoint + $"/{id}", alunoViewModel);
+                HttpResponseMessage? response = await _httpClient.PutAsJsonAsync(Addres + endPoint + $"/{id}", turmaViewModel);
                 response.EnsureSuccessStatusCode();
 
                 string responseBody = await response.Content.ReadAsStringAsync(); //ler o contéudo como string
 
-                var aluno = JsonConvert.DeserializeObject<AlunoDTO>(responseBody);
+                var turma = JsonConvert.DeserializeObject<TurmaDTO>(responseBody);
 
-                if (aluno == null)
+                if (turma == null)
                     return null;
 
-                return aluno;
+                return turma;
             }
             catch (Exception e)
             {
@@ -141,14 +141,14 @@ namespace CadastrosFiap.APP.Services
         }
 
 
-        public static async Task<AlunoDTO> CreateAluno(AlunoViewModel alunoViewModel, string endPoint = "api/v1/alunos")
+        public static async Task<TurmaDTO> CreateTurma(TurmaViewModel turmaViewModel, string endPoint = "api/v1/turmas")
         {
             try
             {
                 var token = GetToken().Result;
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                HttpResponseMessage? response = await _httpClient.PostAsJsonAsync(Addres + endPoint, alunoViewModel);
+                HttpResponseMessage? response = await _httpClient.PostAsJsonAsync(Addres + endPoint, turmaViewModel);
                 response.EnsureSuccessStatusCode();
 
                 string responseBody = await response.Content.ReadAsStringAsync();
@@ -156,12 +156,12 @@ namespace CadastrosFiap.APP.Services
                     responseBody = JObject.Parse(responseBody).Property("data").Value.ToString();
 
 
-                var aluno = JsonConvert.DeserializeObject<AlunoDTO>(responseBody);
+                var turma = JsonConvert.DeserializeObject<TurmaDTO>(responseBody);
 
-                if (aluno == null)
+                if (turma == null)
                     return null;
 
-                return aluno;
+                return turma;
             }
             catch (Exception e)
             {

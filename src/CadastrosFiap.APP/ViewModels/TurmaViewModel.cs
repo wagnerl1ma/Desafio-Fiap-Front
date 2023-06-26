@@ -4,7 +4,7 @@ namespace CadastrosFiap.APP.ViewModels
 {
     public class TurmaViewModel
     {
-        [Key]
+        //[Key]
         public int Id { get; set; }
 
         [Required]
@@ -18,6 +18,8 @@ namespace CadastrosFiap.APP.ViewModels
 
         [Required(ErrorMessage = "É necessário colocar o {0}")]
         [Display(Name = "Ano da Turma", Prompt = "Ex: 2023")]
+        //[MinLength(4)]
+        [Range(2023, 2099, ErrorMessage = "Entre com o ano maior ou igual à 2023")]
         public int Ano { get; set; }
     }
 }

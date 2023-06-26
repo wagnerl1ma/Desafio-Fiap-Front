@@ -1,14 +1,14 @@
-﻿@model IEnumerable<CadastrosFiap.APP.ViewModels.AlunoViewModel>
+﻿@model IEnumerable<CadastrosFiap.APP.ViewModels.TurmaViewModel>
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <p></p>
-<h1>Alunos</h1>
+<h1>Turmas</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Novo Aluno</a>
+    <a asp-action="Create" class="btn btn-primary">Nova Turma</a>
 </p>
 
 <table class="table">
@@ -18,17 +18,14 @@
                 @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Nome)
+                @Html.DisplayNameFor(model => model.IdCurso)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Usuario)
+                @Html.DisplayNameFor(model => model.NomeTurma)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Senha)
+                @Html.DisplayNameFor(model => model.Ano)
             </th>
-            @* <th>
-            @Html.DisplayNameFor(model => model.SenhaIsValid)
-            </th>*@
             <th></th>
         </tr>
     </thead>
@@ -40,17 +37,14 @@
                     @Html.DisplayFor(modelItem => item.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Nome)
+                    @Html.DisplayFor(modelItem => item.IdCurso)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Usuario)
+                    @Html.DisplayFor(modelItem => item.NomeTurma)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Senha)
+                    @Html.DisplayFor(modelItem => item.Ano)
                 </td>
-                @* <td>
-            @Html.DisplayFor(modelItem => item.SenhaIsValid)
-            </td>*@
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     @*<a asp-action="Details" asp-route-id="@item.Id">Details</a> |*@

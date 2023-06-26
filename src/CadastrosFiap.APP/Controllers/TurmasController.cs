@@ -6,51 +6,47 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CadastrosFiap.APP.Controllers
 {
-    public class AlunosController : Controller
+    public class TurmasController : Controller
     {
         private readonly IMapper _mapper;
 
-        public AlunosController(IMapper mapper)
+        public TurmasController(IMapper mapper)
         {
             _mapper = mapper;
         }
 
-        // GET: AlunosController
+        // GET: TurmasController
         public async Task<IActionResult> Index()
         {
-            var getAllAlunos = await ApiAlunoService.GetAllAlunos();
+            var getAllTurmas = await ApiTurmaService.GetAllTurmas();
 
-            var alunos = _mapper.Map<IEnumerable<AlunoViewModel>>(getAllAlunos);
+            var turmas = _mapper.Map<IEnumerable<TurmaViewModel>>(getAllTurmas);
 
-            //var listaAluno = new List<AlunoViewModel>();
-            //var aluno = new AlunoViewModel() { Id = 1, Nome = "Wagner", Usuario = "wagner10", Senha = "*******" };
-            //listaAluno.Add(aluno);
-
-            return View(alunos);
+            return View(turmas);
         }
 
 
-        // GET: AlunosController/Create
+        // GET: TurmasController/Create
         public async Task<IActionResult> Create()
         {
             return View();
         }
 
-        // POST: AlunosController/Create
+        // POST: TurmasController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AlunoViewModel alunoViewModel)
+        public async Task<IActionResult> Create(TurmaViewModel turmaViewModel)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return View(alunoViewModel);
+                    return View(turmaViewModel);
                 }
 
-                var createAluno = await ApiAlunoService.CreateAluno(alunoViewModel);
+                var createAluno = await ApiTurmaService.CreateTurma(turmaViewModel);
                 // criar metodo create
-                //var aluno = _mapper.Map<<AlunoViewModel>(getAllAlunos);
+                //var turma = _mapper.Map<<TurmaViewModel>(getAllTurmas);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -60,7 +56,7 @@ namespace CadastrosFiap.APP.Controllers
             }
         }
 
-        // GET: AlunosController/Edit/5
+        // GET: TurmasController/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -68,23 +64,23 @@ namespace CadastrosFiap.APP.Controllers
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não inserido!" });
             }
 
-            var aluno = await ApiAlunoService.GetAlunoById(id);
+            var turma = await ApiTurmaService.GetTurmaById(id);
 
-            var alunoViewModel = _mapper.Map<AlunoViewModel>(aluno);
-            if (alunoViewModel == null)
+            var turmaViewModel = _mapper.Map<TurmaViewModel>(turma);
+            if (turmaViewModel == null)
             {
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não existe!" });
             }
 
-            return View(alunoViewModel);
+            return View(turmaViewModel);
         }
 
-        // POST: AlunosController/Edit/5
+        // POST: TurmasController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, AlunoViewModel alunoViewModel)
+        public async Task<IActionResult> Edit(int id, TurmaViewModel turmaViewModel)
         {
-            if (id != alunoViewModel.Id)
+            if (id != turmaViewModel.Id)
             {
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não são iguais!" });
             }
@@ -93,8 +89,7 @@ namespace CadastrosFiap.APP.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var aluno = await ApiAlunoService.UpdateAluno(alunoViewModel, id);
-                    //var alunoViewModelMap = _mapper.Map<AlunoViewModel>(aluno);
+                    var turma = await ApiTurmaService.UpdateTurma(turmaViewModel, id);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -105,10 +100,10 @@ namespace CadastrosFiap.APP.Controllers
                 return RedirectToAction(nameof(Error), new { mensagem = ex.Message });
             }
 
-            return View(alunoViewModel);
+            return View(turmaViewModel);
         }
 
-        // GET: AlunosController/Delete/5
+        // GET: TurmasController/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -116,30 +111,30 @@ namespace CadastrosFiap.APP.Controllers
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não inserido!" });
             }
 
-            var aluno = await ApiAlunoService.GetAlunoById(id);
-            var alunoViewModel = _mapper.Map<AlunoViewModel>(aluno);
+            var turma = await ApiTurmaService.GetTurmaById(id);
+            var turmaViewModel = _mapper.Map<TurmaViewModel>(turma);
 
-            if (alunoViewModel == null)
+            if (turmaViewModel == null)
             {
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não existe!" });
             }
 
-            return View(alunoViewModel);
+            return View(turmaViewModel);
         }
 
-        // POST: AlunosController/Delete/5
+        // POST: TurmasController/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
             try
             {
-                if(await ApiAlunoService.RemoveById(id))
+                if (await ApiTurmaService.RemoveById(id))
                 {
                     return RedirectToAction(nameof(Index));
                 }
 
-                return RedirectToAction(nameof(Error), new { mensagem = "Erro ao Remover Aluno" });
+                return RedirectToAction(nameof(Error), new { mensagem = "Erro ao Remover Turma" });
 
             }
             catch (Exception ex)
