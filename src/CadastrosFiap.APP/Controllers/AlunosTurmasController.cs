@@ -26,23 +26,42 @@ namespace CadastrosFiap.APP.Controllers
         }
 
 
-        // GET: AlunosTurmasController/Create
+        //GET: AlunosTurmasController/Create
+        //public async Task<IActionResult> Create()
+        //{
+        //    return View();
+        //}
+
+        //GET: AlunosTurmasController/Create
         public async Task<IActionResult> Create()
         {
-            return View();
+            var getAllAlunos = await ApiAlunoService.GetAllAlunos();
+            var getAllTurmas = await ApiTurmaService.GetAllTurmas();
+
+            var alunos = _mapper.Map<IEnumerable<AlunoViewModel>>(getAllAlunos);
+            var turmas = _mapper.Map<IEnumerable<TurmaViewModel>>(getAllTurmas);
+
+
+            var viewModel = new FormAlunoTurmaViewModel{ Alunos = alunos, Turmas = turmas};
+
+            return View(viewModel);
         }
 
         // POST: AlunosTurmasController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AlunoTurmaViewModel turmaViewModel)
+        public async Task<IActionResult> Create(FormAlunoTurmaViewModel formTurmaViewModel)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return View(turmaViewModel);
+                    return View(formTurmaViewModel);
                 }
+                var turmaViewModel = new AlunoTurmaViewModel();
+                turmaViewModel.AlunoId = formTurmaViewModel.AlunoTurma.AlunoId;
+                turmaViewModel.TurmaId = formTurmaViewModel.AlunoTurma.TurmaId;
+
                 var createAluno = await ApiAlunoTurmaService.CreateAlunoTurma(turmaViewModel);
 
                 return RedirectToAction(nameof(Index));
@@ -69,15 +88,24 @@ namespace CadastrosFiap.APP.Controllers
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não existe!" });
             }
 
-            return View(turmaViewModel);
+            var getAllAlunos = await ApiAlunoService.GetAllAlunos();
+            var getAllTurmas = await ApiTurmaService.GetAllTurmas();
+
+            var alunos = _mapper.Map<IEnumerable<AlunoViewModel>>(getAllAlunos);
+            var turmas = _mapper.Map<IEnumerable<TurmaViewModel>>(getAllTurmas);
+
+
+            var viewModel = new FormAlunoTurmaViewModel { AlunoTurma = turmaViewModel, Alunos = alunos, Turmas = turmas };
+
+            return View(viewModel);
         }
 
         // POST: AlunosTurmasController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, AlunoTurmaViewModel turmaViewModel)
+        public async Task<IActionResult> Edit(int id, FormAlunoTurmaViewModel formTurmaViewModel)
         {
-            if (id != turmaViewModel.AlunoId)
+            if (id != formTurmaViewModel.AlunoTurma.AlunoId)
             {
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não são iguais!" });
             }
@@ -86,6 +114,10 @@ namespace CadastrosFiap.APP.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    var turmaViewModel = new AlunoTurmaViewModel();
+                    turmaViewModel.AlunoId = formTurmaViewModel.AlunoTurma.AlunoId;
+                    turmaViewModel.TurmaId = formTurmaViewModel.AlunoTurma.TurmaId;
+
                     var turma = await ApiAlunoTurmaService.UpdateAlunoTurma(turmaViewModel, id);
 
                     return RedirectToAction(nameof(Index));
@@ -97,7 +129,7 @@ namespace CadastrosFiap.APP.Controllers
                 return RedirectToAction(nameof(Error), new { mensagem = ex.Message });
             }
 
-            return View(turmaViewModel);
+            return View(formTurmaViewModel);
         }
 
         // GET: AlunosTurmasController/Delete/5
