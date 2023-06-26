@@ -4,8 +4,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NuGet.Protocol;
 using System.Net.Http.Headers;
-//using Newtonsoft.Json;
-//using System.Net;
 using System.Text.Json;
 
 namespace CadastrosFiap.APP.Services
@@ -20,11 +18,9 @@ namespace CadastrosFiap.APP.Services
         {
             try
             {
-                //var cliente = new HttpClient();
                 var myJsonOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
 
                 HttpResponseMessage? response = await _httpClient.GetAsync(Addres + endPoint);
-                //HttpResponseMessage? response = await cliente.GetAsync("https://localhost:44352/api/v1/autenticacao");
                 response.EnsureSuccessStatusCode();
 
                 string responseBody = await response.Content.ReadAsStringAsync(); //ler o contéudo como string
@@ -96,7 +92,7 @@ namespace CadastrosFiap.APP.Services
                 HttpResponseMessage? response = await _httpClient.GetAsync(Addres + endPoint);
                 response.EnsureSuccessStatusCode();
 
-                string responseBody = await response.Content.ReadAsStringAsync(); //ler o contéudo como string
+                string responseBody = await response.Content.ReadAsStringAsync();
 
                 var lista = JsonConvert.DeserializeObject<List<TurmaDTO>>(responseBody);
 

@@ -10,8 +10,7 @@ namespace CadastrosFiap.APP.AutoMapper
         {
             CreateMap<AlunoDTO, AlunoViewModel>().ReverseMap();
             CreateMap<TurmaDTO, TurmaViewModel>().ReverseMap();
-            //CreateMap<AlunoTurma, AlunoTurmaViewModel>().ReverseMap();
-
+            CreateMap<AlunoTurmaDTO, AlunoTurmaViewModel>().ReverseMap();
         }
     }
 }

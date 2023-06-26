@@ -4,13 +4,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NuGet.Protocol;
 using System.Net.Http.Headers;
-//using Newtonsoft.Json;
-//using System.Net;
 using System.Text.Json;
 
 namespace CadastrosFiap.APP.Services
 {
-    public static class ApiAlunoService
+    public static class ApiAlunoTurmaService
     {
         public static string Addres { get; set; } = "https://localhost:44352/";
         //public static string AddresToken { get; set; } = Addres + "api/v1/autenticacao";
@@ -20,7 +18,6 @@ namespace CadastrosFiap.APP.Services
         {
             try
             {
-                //var cliente = new HttpClient();
                 var myJsonOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
 
                 HttpResponseMessage? response = await _httpClient.GetAsync(Addres + endPoint);
@@ -37,7 +34,7 @@ namespace CadastrosFiap.APP.Services
             }
 
         }
-        public static async Task<AlunoDTO> GetAlunoById(int? id, string endPoint = "api/v1/alunos")
+        public static async Task<AlunoTurmaDTO> GetAlunoTurmaById(int? id, string endPoint = "api/v1/alunosturmas")
         {
             try
             {
@@ -49,12 +46,12 @@ namespace CadastrosFiap.APP.Services
 
                 string responseBody = await response.Content.ReadAsStringAsync(); //ler o contéudo como string
 
-                var aluno = JsonConvert.DeserializeObject<AlunoDTO>(responseBody);
+                var alunoTurma = JsonConvert.DeserializeObject<AlunoTurmaDTO>(responseBody);
 
-                if (aluno == null)
+                if (alunoTurma == null)
                     return null;
 
-                return aluno;
+                return alunoTurma;
             }
             catch (Exception e)
             {
@@ -64,7 +61,7 @@ namespace CadastrosFiap.APP.Services
             }
         }
 
-        public static async Task<bool> RemoveById(int? id, string endPoint = "api/v1/alunos")
+        public static async Task<bool> RemoveById(int? id, string endPoint = "api/v1/alunosturmas")
         {
             try
             {
@@ -85,7 +82,7 @@ namespace CadastrosFiap.APP.Services
             }
         }
 
-        public static async Task<IEnumerable<AlunoDTO>> GetAllAlunos(string endPoint = "api/v1/alunos")
+        public static async Task<IEnumerable<AlunoTurmaDTO>> GetAllAlunosTurmas(string endPoint = "api/v1/alunosturmas")
         {
             try
             {
@@ -95,12 +92,12 @@ namespace CadastrosFiap.APP.Services
                 HttpResponseMessage? response = await _httpClient.GetAsync(Addres + endPoint);
                 response.EnsureSuccessStatusCode();
 
-                string responseBody = await response.Content.ReadAsStringAsync(); //ler o contéudo como string
+                string responseBody = await response.Content.ReadAsStringAsync();
 
-                var lista = JsonConvert.DeserializeObject<List<AlunoDTO>>(responseBody);
+                var lista = JsonConvert.DeserializeObject<List<AlunoTurmaDTO>>(responseBody);
 
                 if (lista == null)
-                    return new List<AlunoDTO>();
+                    return new List<AlunoTurmaDTO>();
 
                 return lista;
             }
@@ -108,28 +105,29 @@ namespace CadastrosFiap.APP.Services
             {
                 Console.WriteLine("\n Ocorreu um erro!");
                 Console.WriteLine("\n Erro: {0}", e.Message);
-                return new List<AlunoDTO>();
+                return new List<AlunoTurmaDTO>();
             }
         }
 
-        public static async Task<AlunoDTO> UpdateAluno(AlunoViewModel alunoViewModel, int id, string endPoint = "api/v1/alunos")
+        public static async Task<AlunoTurmaDTO> UpdateAlunoTurma(AlunoTurmaViewModel alunoTurmaViewModel, int id, string endPoint = "api/v1/alunosturmas")
         {
             try
             {
                 var token = GetToken().Result;
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                HttpResponseMessage? response = await _httpClient.PutAsJsonAsync(Addres + endPoint + $"/{id}", alunoViewModel);
+                var end = Addres + endPoint + $"/{id}";
+                HttpResponseMessage? response = await _httpClient.PutAsJsonAsync(Addres + endPoint + $"/{id}", alunoTurmaViewModel);
                 response.EnsureSuccessStatusCode();
 
                 string responseBody = await response.Content.ReadAsStringAsync(); //ler o contéudo como string
 
-                var aluno = JsonConvert.DeserializeObject<AlunoDTO>(responseBody);
+                var alunoTurma = JsonConvert.DeserializeObject<AlunoTurmaDTO>(responseBody);
 
-                if (aluno == null)
+                if (alunoTurma == null)
                     return null;
 
-                return aluno;
+                return alunoTurma;
             }
             catch (Exception e)
             {
@@ -140,26 +138,27 @@ namespace CadastrosFiap.APP.Services
         }
 
 
-        public static async Task<AlunoDTO> CreateAluno(AlunoViewModel alunoViewModel, string endPoint = "api/v1/alunos")
+        public static async Task<AlunoTurmaDTO> CreateAlunoTurma(AlunoTurmaViewModel alunoTurmaViewModel, string endPoint = "api/v1/alunosturmas")
         {
             try
             {
                 var token = GetToken().Result;
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                HttpResponseMessage? response = await _httpClient.PostAsJsonAsync(Addres + endPoint, alunoViewModel);
+                HttpResponseMessage? response = await _httpClient.PostAsJsonAsync(Addres + endPoint, alunoTurmaViewModel);
                 response.EnsureSuccessStatusCode();
 
                 string responseBody = await response.Content.ReadAsStringAsync();
                 if (!string.IsNullOrEmpty(responseBody))
                     responseBody = JObject.Parse(responseBody).Property("data").Value.ToString();
 
-                var aluno = JsonConvert.DeserializeObject<AlunoDTO>(responseBody);
 
-                if (aluno == null)
+                var alunoTurma = JsonConvert.DeserializeObject<AlunoTurmaDTO>(responseBody);
+
+                if (alunoTurma == null)
                     return null;
 
-                return aluno;
+                return alunoTurma;
             }
             catch (Exception e)
             {
