@@ -2,7 +2,7 @@
 
 # Tela Web de Cadastros
 #### CRUD em ASP.NET Core que consume informações de uma API
-##### Repositório da API que é consumida pelo este projeto: https://github.com/wagnerl1ma/Desafio-Fiap-API
+##### Repositório da API que é consumida por este projeto: https://github.com/wagnerl1ma/Desafio-Fiap-API
 
 ```bash
 # clonar repositório
