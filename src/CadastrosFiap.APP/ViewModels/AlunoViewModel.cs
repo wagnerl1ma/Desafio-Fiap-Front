@@ -5,7 +5,6 @@ namespace CadastrosFiap.APP.ViewModels
     public class AlunoViewModel
     {
         //[Key]
-        //[JsonIgnore]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "É necessário colocar o {0}")]
@@ -21,8 +20,5 @@ namespace CadastrosFiap.APP.ViewModels
         [RegularExpression(@"^(?=.*[^a-zA-Z0-9]).{8,40}$", ErrorMessage = "A senha deve atender aos requisitos: deve ser entre 8 e 40 caracteres com pelo menos 1 caractere especial")]
         public string Senha { get; set; }
 
-        //[NotMapped]
-        //[JsonIgnore]
-        //public bool? SenhaIsValid { get; set; } = null;
     }
 }

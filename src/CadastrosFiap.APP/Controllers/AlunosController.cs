@@ -22,10 +22,6 @@ namespace CadastrosFiap.APP.Controllers
 
             var alunos = _mapper.Map<IEnumerable<AlunoViewModel>>(getAllAlunos);
 
-            //var listaAluno = new List<AlunoViewModel>();
-            //var aluno = new AlunoViewModel() { Id = 1, Nome = "Wagner", Usuario = "wagner10", Senha = "*******" };
-            //listaAluno.Add(aluno);
-
             return View(alunos);
         }
 
@@ -49,9 +45,6 @@ namespace CadastrosFiap.APP.Controllers
                 }
 
                 var createAluno = await ApiAlunoService.CreateAluno(alunoViewModel);
-                // criar metodo create
-                //var aluno = _mapper.Map<<AlunoViewModel>(getAllAlunos);
-
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -94,8 +87,6 @@ namespace CadastrosFiap.APP.Controllers
                 if (ModelState.IsValid)
                 {
                     var aluno = await ApiAlunoService.UpdateAluno(alunoViewModel, id);
-                    //var alunoViewModelMap = _mapper.Map<AlunoViewModel>(aluno);
-
                     return RedirectToAction(nameof(Index));
                 }
 

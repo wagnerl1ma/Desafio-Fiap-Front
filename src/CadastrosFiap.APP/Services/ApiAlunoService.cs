@@ -13,7 +13,6 @@ namespace CadastrosFiap.APP.Services
     public static class ApiAlunoService
     {
         public static string Addres { get; set; } = "https://localhost:44352/";
-        //public static string AddresToken { get; set; } = Addres + "api/v1/autenticacao";
         public static HttpClient _httpClient { get; set; } = new HttpClient();
 
         public static async Task<string> GetToken(string endPoint = "api/v1/autenticacao")

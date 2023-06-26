@@ -25,7 +25,6 @@ namespace CadastrosFiap.APP.Controllers
             return View(turmas);
         }
 
-
         // GET: TurmasController/Create
         public async Task<IActionResult> Create()
         {
@@ -45,8 +44,6 @@ namespace CadastrosFiap.APP.Controllers
                 }
 
                 var createAluno = await ApiTurmaService.CreateTurma(turmaViewModel);
-                // criar metodo create
-                //var turma = _mapper.Map<<TurmaViewModel>(getAllTurmas);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -90,7 +87,6 @@ namespace CadastrosFiap.APP.Controllers
                 if (ModelState.IsValid)
                 {
                     var turma = await ApiTurmaService.UpdateTurma(turmaViewModel, id);
-
                     return RedirectToAction(nameof(Index));
                 }
 

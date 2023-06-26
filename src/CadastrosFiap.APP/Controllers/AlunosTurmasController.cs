@@ -41,8 +41,7 @@ namespace CadastrosFiap.APP.Controllers
             var alunos = _mapper.Map<IEnumerable<AlunoViewModel>>(getAllAlunos);
             var turmas = _mapper.Map<IEnumerable<TurmaViewModel>>(getAllTurmas);
 
-
-            var viewModel = new FormAlunoTurmaViewModel{ Alunos = alunos, Turmas = turmas};
+            var viewModel = new FormAlunoTurmaViewModel { Alunos = alunos, Turmas = turmas };
 
             return View(viewModel);
         }
@@ -58,6 +57,7 @@ namespace CadastrosFiap.APP.Controllers
                 {
                     return View(formTurmaViewModel);
                 }
+
                 var turmaViewModel = new AlunoTurmaViewModel();
                 turmaViewModel.AlunoId = formTurmaViewModel.AlunoTurma.AlunoId;
                 turmaViewModel.TurmaId = formTurmaViewModel.AlunoTurma.TurmaId;
@@ -81,8 +81,8 @@ namespace CadastrosFiap.APP.Controllers
             }
 
             var turma = await ApiAlunoTurmaService.GetAlunoTurmaById(id);
-
             var turmaViewModel = _mapper.Map<AlunoTurmaViewModel>(turma);
+
             if (turmaViewModel == null)
             {
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não existe!" });
@@ -93,7 +93,6 @@ namespace CadastrosFiap.APP.Controllers
 
             var alunos = _mapper.Map<IEnumerable<AlunoViewModel>>(getAllAlunos);
             var turmas = _mapper.Map<IEnumerable<TurmaViewModel>>(getAllTurmas);
-
 
             var viewModel = new FormAlunoTurmaViewModel { AlunoTurma = turmaViewModel, Alunos = alunos, Turmas = turmas };
 
