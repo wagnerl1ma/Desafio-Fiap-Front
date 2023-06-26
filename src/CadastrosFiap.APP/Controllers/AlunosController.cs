@@ -2,6 +2,7 @@
 using CadastrosFiap.APP.Services;
 using CadastrosFiap.APP.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CadastrosFiap.APP.Controllers
 {
@@ -38,10 +39,19 @@ namespace CadastrosFiap.APP.Controllers
         // POST: AlunosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create(AlunoViewModel alunoViewModel)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(alunoViewModel);
+                }
+
+                var createAluno = await AlunoApiService.CreateAluno(alunoViewModel);
+                // criar metodo create
+                //var aluno = _mapper.Map<<AlunoViewModel>(getAllAlunos);
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -51,44 +61,90 @@ namespace CadastrosFiap.APP.Controllers
         }
 
         // GET: AlunosController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Error), new { mensagem = "Id não inserido!" });
+            }
+
+            var aluno = await AlunoApiService.GetAlunoById(id);
+
+            var alunoViewModel = _mapper.Map<AlunoViewModel>(aluno);
+            if (alunoViewModel == null)
+            {
+                return RedirectToAction(nameof(Error), new { mensagem = "Id não existe!" });
+            }
+
+            return View(alunoViewModel);
         }
 
         // POST: AlunosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int id, AlunoViewModel alunoViewModel)
         {
+            if (id != alunoViewModel.Id)
+            {
+                return RedirectToAction(nameof(Error), new { mensagem = "Id não são iguais!" });
+            }
+
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    var aluno = await AlunoApiService.UpdateAluno(alunoViewModel, id);
+                    //var alunoViewModelMap = _mapper.Map<AlunoViewModel>(aluno);
+
+                    return RedirectToAction(nameof(Index));
+                }
+
             }
-            catch
+            catch (ApplicationException ex)
             {
-                return View();
+                return RedirectToAction(nameof(Error), new { mensagem = ex.Message });
             }
+
+            return View(alunoViewModel);
         }
 
         // GET: AlunosController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Error), new { mensagem = "Id não inserido!" });
+            }
+
+            var aluno = await AlunoApiService.GetAlunoById(id);
+            var alunoViewModel = _mapper.Map<AlunoViewModel>(aluno);
+
+            if (alunoViewModel == null)
+            {
+                return RedirectToAction(nameof(Error), new { mensagem = "Id não existe!" });
+            }
+
+            return View(alunoViewModel);
         }
 
         // POST: AlunosController/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if(await AlunoApiService.RemoveById(id))
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return RedirectToAction(nameof(Error), new { mensagem = "Erro ao Remover Aluno" });
+
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
             }
         }
     }

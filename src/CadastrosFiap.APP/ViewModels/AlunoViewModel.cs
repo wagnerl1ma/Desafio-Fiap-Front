@@ -1,7 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.InteropServices;
-using System.Text.Json.Serialization;
 
 namespace CadastrosFiap.APP.ViewModels
 {
@@ -21,7 +18,7 @@ namespace CadastrosFiap.APP.ViewModels
 
         [Required(ErrorMessage = "É necessário colocar a {0}")]
         [StringLength(40, MinimumLength = 8, ErrorMessage = "O tamanho da {0} deve ser entre {2} e {1} caracteres com pelo menos 1 caractere especial!")]
-        [RegularExpression(@"^(?=.*[^a-zA-Z0-9]).{8,40}$", ErrorMessage = "A senha deve atender aos requisitos: 8 caracteres com pelo menos 1 caractere especial")]
+        [RegularExpression(@"^(?=.*[^a-zA-Z0-9]).{8,40}$", ErrorMessage = "A senha deve atender aos requisitos: deve ser entre 8 e 40 caracteres com pelo menos 1 caractere especial")]
         public string Senha { get; set; }
 
         //[NotMapped]
