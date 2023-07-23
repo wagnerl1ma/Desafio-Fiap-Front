@@ -9,18 +9,19 @@ namespace CadastrosFiap.APP.Controllers
     public class AlunosTurmasController : Controller
     {
         private readonly IMapper _mapper;
+        private readonly IFiapApiService _fiapApiService;
 
-        public AlunosTurmasController(IMapper mapper)
+        public AlunosTurmasController(IMapper mapper, IFiapApiService fiapApiService)
         {
             _mapper = mapper;
+            _fiapApiService = fiapApiService;
         }
 
         // GET: AlunosTurmasController
         public async Task<IActionResult> Index()
         {
-            var getAllTurmas = await ApiAlunoTurmaService.GetAllAlunosTurmas();
-
-            var turmas = _mapper.Map<IEnumerable<AlunoTurmaViewModel>>(getAllTurmas);
+            var getAllAlunosTurmas = await _fiapApiService.GetAllAlunosTurmas(GetToken());
+            var turmas = _mapper.Map<IEnumerable<AlunoTurmaViewModel>>(getAllAlunosTurmas);
 
             return View(turmas);
         }
@@ -35,8 +36,8 @@ namespace CadastrosFiap.APP.Controllers
         //GET: AlunosTurmasController/Create
         public async Task<IActionResult> Create()
         {
-            var getAllAlunos = await ApiAlunoService.GetAllAlunos();
-            var getAllTurmas = await ApiTurmaService.GetAllTurmas();
+            var getAllAlunos = await _fiapApiService.GetAllAlunos(GetToken());
+            var getAllTurmas = await _fiapApiService.GetAllTurmas(GetToken());
 
             var alunos = _mapper.Map<IEnumerable<AlunoViewModel>>(getAllAlunos);
             var turmas = _mapper.Map<IEnumerable<TurmaViewModel>>(getAllTurmas);
@@ -62,7 +63,7 @@ namespace CadastrosFiap.APP.Controllers
                 turmaViewModel.AlunoId = formTurmaViewModel.AlunoTurma.AlunoId;
                 turmaViewModel.TurmaId = formTurmaViewModel.AlunoTurma.TurmaId;
 
-                var createAluno = await ApiAlunoTurmaService.CreateAlunoTurma(turmaViewModel);
+                var createAluno = await _fiapApiService.CreateAlunoTurma(turmaViewModel, GetToken());
 
                 return RedirectToAction(nameof(Index));
             }
@@ -80,7 +81,7 @@ namespace CadastrosFiap.APP.Controllers
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não inserido!" });
             }
 
-            var turma = await ApiAlunoTurmaService.GetAlunoTurmaById(id);
+            var turma = await _fiapApiService.GetAlunoTurmaById(id, GetToken());
             var turmaViewModel = _mapper.Map<AlunoTurmaViewModel>(turma);
 
             if (turmaViewModel == null)
@@ -88,8 +89,8 @@ namespace CadastrosFiap.APP.Controllers
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não existe!" });
             }
 
-            var getAllAlunos = await ApiAlunoService.GetAllAlunos();
-            var getAllTurmas = await ApiTurmaService.GetAllTurmas();
+            var getAllAlunos = await _fiapApiService.GetAllAlunos(GetToken());
+            var getAllTurmas = await _fiapApiService.GetAllTurmas(GetToken());
 
             var alunos = _mapper.Map<IEnumerable<AlunoViewModel>>(getAllAlunos);
             var turmas = _mapper.Map<IEnumerable<TurmaViewModel>>(getAllTurmas);
@@ -117,7 +118,7 @@ namespace CadastrosFiap.APP.Controllers
                     turmaViewModel.AlunoId = formTurmaViewModel.AlunoTurma.AlunoId;
                     turmaViewModel.TurmaId = formTurmaViewModel.AlunoTurma.TurmaId;
 
-                    var turma = await ApiAlunoTurmaService.UpdateAlunoTurma(turmaViewModel, id);
+                    var turma = await _fiapApiService.UpdateAlunoTurma(id, turmaViewModel, GetToken());
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -139,7 +140,7 @@ namespace CadastrosFiap.APP.Controllers
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não inserido!" });
             }
 
-            var turma = await ApiAlunoTurmaService.GetAlunoTurmaById(id);
+            var turma = await _fiapApiService.GetAlunoTurmaById(id, GetToken());
             var turmaViewModel = _mapper.Map<AlunoTurmaViewModel>(turma);
 
             if (turmaViewModel == null)
@@ -157,18 +158,19 @@ namespace CadastrosFiap.APP.Controllers
         {
             try
             {
-                if (await ApiAlunoTurmaService.RemoveById(id))
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-
-                return RedirectToAction(nameof(Error), new { mensagem = "Erro ao Remover Turma" });
-
+                await _fiapApiService.RemoveAlunoTurmaById(id, GetToken());
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                return RedirectToAction(nameof(Error), new { message = ex.Message });
+                return RedirectToAction(nameof(Error), new { message = $"Erro ao Remover Aluno Turma - {ex.Message}" });
             }
+        }
+
+        private string GetToken()
+        {
+            var token = _fiapApiService.GetToken().GetAwaiter().GetResult();
+            return $"Bearer {token}";
         }
     }
 }

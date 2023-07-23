@@ -9,17 +9,18 @@ namespace CadastrosFiap.APP.Controllers
     public class AlunosController : Controller
     {
         private readonly IMapper _mapper;
+        private readonly IFiapApiService _fiapApiService;
 
-        public AlunosController(IMapper mapper)
+        public AlunosController(IMapper mapper, IFiapApiService fiapApiService)
         {
             _mapper = mapper;
+            _fiapApiService = fiapApiService;
         }
 
         // GET: AlunosController
         public async Task<IActionResult> Index()
         {
-            var getAllAlunos = await ApiAlunoService.GetAllAlunos();
-
+            var getAllAlunos = await _fiapApiService.GetAllAlunos(GetToken());
             var alunos = _mapper.Map<IEnumerable<AlunoViewModel>>(getAllAlunos);
 
             return View(alunos);
@@ -44,7 +45,7 @@ namespace CadastrosFiap.APP.Controllers
                     return View(alunoViewModel);
                 }
 
-                var createAluno = await ApiAlunoService.CreateAluno(alunoViewModel);
+                var createAluno = await _fiapApiService.CreateAluno(alunoViewModel, GetToken());
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -61,7 +62,9 @@ namespace CadastrosFiap.APP.Controllers
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não inserido!" });
             }
 
-            var aluno = await ApiAlunoService.GetAlunoById(id);
+            //var aluno = await ApiAlunoService.GetAlunoById(id);
+            var aluno = await _fiapApiService.GetAlunoById(id, GetToken());
+
 
             var alunoViewModel = _mapper.Map<AlunoViewModel>(aluno);
             if (alunoViewModel == null)
@@ -86,7 +89,8 @@ namespace CadastrosFiap.APP.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var aluno = await ApiAlunoService.UpdateAluno(alunoViewModel, id);
+                    //var aluno = await ApiAlunoService.UpdateAluno(alunoViewModel, id);
+                    var aluno = await _fiapApiService.UpdateAluno(id, alunoViewModel, GetToken());
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -107,7 +111,7 @@ namespace CadastrosFiap.APP.Controllers
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não inserido!" });
             }
 
-            var aluno = await ApiAlunoService.GetAlunoById(id);
+            var aluno = await _fiapApiService.GetAlunoById(id, GetToken());
             var alunoViewModel = _mapper.Map<AlunoViewModel>(aluno);
 
             if (alunoViewModel == null)
@@ -125,18 +129,19 @@ namespace CadastrosFiap.APP.Controllers
         {
             try
             {
-                if(await ApiAlunoService.RemoveById(id))
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-
-                return RedirectToAction(nameof(Error), new { mensagem = "Erro ao Remover Aluno" });
-
+                await _fiapApiService.RemoveAlunoById(id, GetToken());
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                return RedirectToAction(nameof(Error), new { message = ex.Message });
+                return RedirectToAction(nameof(Error), new { message = $"Erro ao Remover Aluno - {ex.Message}" });
             }
+        }
+
+        private string GetToken()
+        {
+            var token = _fiapApiService.GetToken().GetAwaiter().GetResult();
+            return $"Bearer {token}";
         }
     }
 }
