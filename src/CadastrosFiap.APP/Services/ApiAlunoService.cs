@@ -2,10 +2,7 @@
 using CadastrosFiap.APP.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NuGet.Protocol;
 using System.Net.Http.Headers;
-//using Newtonsoft.Json;
-//using System.Net;
 using System.Text.Json;
 
 namespace CadastrosFiap.APP.Services
@@ -31,8 +28,7 @@ namespace CadastrosFiap.APP.Services
             }
             catch (Exception ex)
             {
-                return "";
-                //throw ex;
+                return string.Empty;
             }
 
         }

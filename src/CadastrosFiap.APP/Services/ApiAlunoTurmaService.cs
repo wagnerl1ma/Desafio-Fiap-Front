@@ -28,8 +28,7 @@ namespace CadastrosFiap.APP.Services
             }
             catch (Exception ex)
             {
-                return "";
-                //throw ex;
+                return string.Empty;
             }
 
         }
