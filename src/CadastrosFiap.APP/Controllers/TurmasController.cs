@@ -9,16 +9,18 @@ namespace CadastrosFiap.APP.Controllers
     public class TurmasController : Controller
     {
         private readonly IMapper _mapper;
+        private readonly IFiapApiService _fiapApiService;
 
-        public TurmasController(IMapper mapper)
+        public TurmasController(IMapper mapper, IFiapApiService fiapApiService)
         {
             _mapper = mapper;
+            _fiapApiService = fiapApiService;
         }
 
         // GET: TurmasController
         public async Task<IActionResult> Index()
         {
-            var getAllTurmas = await ApiTurmaService.GetAllTurmas();
+            var getAllTurmas = await _fiapApiService.GetAllTurmas(GetToken());
 
             var turmas = _mapper.Map<IEnumerable<TurmaViewModel>>(getAllTurmas);
 
@@ -43,7 +45,7 @@ namespace CadastrosFiap.APP.Controllers
                     return View(turmaViewModel);
                 }
 
-                var createAluno = await ApiTurmaService.CreateTurma(turmaViewModel);
+                var createAluno = await _fiapApiService.CreateTurma(turmaViewModel, GetToken());
 
                 return RedirectToAction(nameof(Index));
             }
@@ -61,7 +63,7 @@ namespace CadastrosFiap.APP.Controllers
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não inserido!" });
             }
 
-            var turma = await ApiTurmaService.GetTurmaById(id);
+            var turma = await _fiapApiService.GetTurmaById(id, GetToken());
 
             var turmaViewModel = _mapper.Map<TurmaViewModel>(turma);
             if (turmaViewModel == null)
@@ -86,7 +88,7 @@ namespace CadastrosFiap.APP.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var turma = await ApiTurmaService.UpdateTurma(turmaViewModel, id);
+                    var turma = await _fiapApiService.UpdateTurma(id, turmaViewModel, GetToken());
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -107,7 +109,7 @@ namespace CadastrosFiap.APP.Controllers
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não inserido!" });
             }
 
-            var turma = await ApiTurmaService.GetTurmaById(id);
+            var turma = await _fiapApiService.GetTurmaById(id, GetToken());
             var turmaViewModel = _mapper.Map<TurmaViewModel>(turma);
 
             if (turmaViewModel == null)
@@ -125,18 +127,19 @@ namespace CadastrosFiap.APP.Controllers
         {
             try
             {
-                if (await ApiTurmaService.RemoveById(id))
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-
-                return RedirectToAction(nameof(Error), new { mensagem = "Erro ao Remover Turma" });
-
+                await _fiapApiService.RemoveTurmaById(id, GetToken());
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                return RedirectToAction(nameof(Error), new { message = ex.Message });
+                return RedirectToAction(nameof(Error), new { mensagem = $"Erro ao Remover Turma - {ex.Message}" });
             }
+        }
+
+        private string GetToken()
+        {
+            var token = _fiapApiService.GetToken().GetAwaiter().GetResult();
+            return $"Bearer {token}";
         }
     }
 }
